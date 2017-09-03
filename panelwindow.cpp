@@ -7,7 +7,6 @@ QMainWindow(parent), userList(uc), currentUser(u), reLog(r){
     setWindowTitle("Japanese dictionary");
     wPanel=new workPanel(userList, currentUser);
     setCentralWidget(wPanel);
-    connect(wPanel,SIGNAL(reLogin()),this, SLOT(reLogin()));
     menu=new QMenuBar();
     file=new QMenu("File");
     logOut=new QAction("Log out");

@@ -13,7 +13,7 @@ public:
     bool isIchidan()const;
     bool operator==(const verb&)const;
     virtual word* clone()const;
-    virtual QString info()const;
+    virtual QString getInfo()const;
     virtual void exportWordData(QXmlStreamWriter&)const;
     void setTrans(bool);
     void setType(bool);

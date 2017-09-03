@@ -77,7 +77,15 @@ bool kanjiEdit:: checkRequest(){
     if(character->text() == ""){
         QMessageBox error;
         error.setWindowTitle("Error");
-        error.setText("Your must enter a character");
+        error.setText("You must enter a character.");
+        error.show();
+        error.exec();
+        return false;
+    }
+    if(level->currentText() == "Select"){
+        QMessageBox error;
+        error.setWindowTitle("Error");
+        error.setText("You must select a JLPT level");
         error.show();
         error.exec();
         return false;
@@ -85,7 +93,7 @@ bool kanjiEdit:: checkRequest(){
     return true;
 }
 
-void kanjiEdit:: edit(){ //aggiungere controlli
+void kanjiEdit:: edit(){
     if(K != 0){
         if(character->text() != ""){
             K->setCharacter(character->text());

@@ -12,7 +12,7 @@ word* noun::clone()const{
     return new noun(*this);
 }
 
-QString noun::info()const{
+QString noun::getInfo()const{
     QString info=word::getInfo();
     info.prepend("-NOU-\n");
     if(isForeign()){

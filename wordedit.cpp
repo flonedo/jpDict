@@ -13,57 +13,54 @@ wordEdit::wordEdit(word* w, dictionary& d, QWidget* parent):
     layout=new QFormLayout;
     setLayout(layout);
     if(W == 0){
-        setWindowTitle("New word");
-        choice=new QLabel;
-        choice->setText("Select word type:");
-        adj=new QRadioButton;
-        adj->setText("Adjective");
-        adv=new QRadioButton;
-        adv->setText("Adverb");
-        nou=new QRadioButton;
-        nou->setText("Noun");
-        ver=new QRadioButton;
-        ver->setText("Verb");
-        layout->addRow(choice);
-        layout->addRow(adj,adv);
-        layout->addRow(nou,ver);
-        createGui();
-        connect(adj, SIGNAL(clicked()),ik,SLOT(show()));
-        connect(adj, SIGNAL(clicked()),nak,SLOT(show()));
-        connect(adv, SIGNAL(clicked()),part,SLOT(show()));
-        connect(nou, SIGNAL(clicked()),foreign,SLOT(show()));
-        connect(ver, SIGNAL(clicked()),trans,SLOT(show()));
-        connect(ver, SIGNAL(clicked()),ichi,SLOT(show()));
-        connect(adj, SIGNAL(clicked()),part,SLOT(hide()));
-        connect(adj, SIGNAL(clicked()),foreign,SLOT(hide()));
-        connect(adj, SIGNAL(clicked()),trans,SLOT(hide()));
-        connect(adj, SIGNAL(clicked()),ichi,SLOT(hide()));
-        connect(adv, SIGNAL(clicked()),ik,SLOT(hide()));
-        connect(adv, SIGNAL(clicked()),nak,SLOT(hide()));
-        connect(adv, SIGNAL(clicked()),foreign,SLOT(hide()));
-        connect(adv, SIGNAL(clicked()),trans,SLOT(hide()));
-        connect(adv, SIGNAL(clicked()),ichi,SLOT(hide()));
-        connect(nou, SIGNAL(clicked()),ik,SLOT(hide()));
-        connect(nou, SIGNAL(clicked()),nak,SLOT(hide()));
-        connect(nou, SIGNAL(clicked()),part,SLOT(hide()));
-        connect(nou, SIGNAL(clicked()),trans,SLOT(hide()));
-        connect(nou, SIGNAL(clicked()),ichi,SLOT(hide()));
-        connect(ver, SIGNAL(clicked()),foreign,SLOT(hide()));
-        connect(ver, SIGNAL(clicked()),ik,SLOT(hide()));
-        connect(ver, SIGNAL(clicked()),nak,SLOT(hide()));
-        connect(ver, SIGNAL(clicked()),part,SLOT(hide()));
+        newWordGui();
     }
     else{
-        setWindowTitle("Word edit");
-        createGui();
-        yes->setText("Edit");
-        kana->setPlaceholderText(W->getKana());
-        romaji->setPlaceholderText(W->getRomaji());
-        kanji->setPlaceholderText(W->getKanji());
-        meaning->setPlaceholderText(W->getMeaning());
+       editWordGui();
     }
 }
 
+void wordEdit:: newWordGui(){
+    setWindowTitle("New word");
+    choice=new QLabel;
+    choice->setText("Select word type:");
+    adj=new QRadioButton;
+    adj->setText("Adjective");
+    adv=new QRadioButton;
+    adv->setText("Adverb");
+    nou=new QRadioButton;
+    nou->setText("Noun");
+    ver=new QRadioButton;
+    ver->setText("Verb");
+    layout->addRow(choice);
+    layout->addRow(adj,adv);
+    layout->addRow(nou,ver);
+    createGui();
+    connect(adj, SIGNAL(clicked()),ik,SLOT(show()));
+    connect(adj, SIGNAL(clicked()),nak,SLOT(show()));
+    connect(adv, SIGNAL(clicked()),part,SLOT(show()));
+    connect(nou, SIGNAL(clicked()),foreign,SLOT(show()));
+    connect(ver, SIGNAL(clicked()),trans,SLOT(show()));
+    connect(ver, SIGNAL(clicked()),ichi,SLOT(show()));
+    connect(adj, SIGNAL(clicked()),part,SLOT(hide()));
+    connect(adj, SIGNAL(clicked()),foreign,SLOT(hide()));
+    connect(adj, SIGNAL(clicked()),trans,SLOT(hide()));
+    connect(adj, SIGNAL(clicked()),ichi,SLOT(hide()));
+    connect(adv, SIGNAL(clicked()),ik,SLOT(hide()));
+    connect(adv, SIGNAL(clicked()),nak,SLOT(hide()));
+    connect(adv, SIGNAL(clicked()),foreign,SLOT(hide()));
+    connect(adv, SIGNAL(clicked()),trans,SLOT(hide()));
+    connect(adv, SIGNAL(clicked()),ichi,SLOT(hide()));
+    connect(nou, SIGNAL(clicked()),ik,SLOT(hide()));
+    connect(nou, SIGNAL(clicked()),nak,SLOT(hide()));
+    connect(nou, SIGNAL(clicked()),part,SLOT(hide()));
+    connect(nou, SIGNAL(clicked()),trans,SLOT(hide()));
+    connect(nou, SIGNAL(clicked()),ichi,SLOT(hide()));
+    connect(ver, SIGNAL(clicked()),foreign,SLOT(hide()));
+    connect(ver, SIGNAL(clicked()),ik,SLOT(hide()));
+    connect(ver, SIGNAL(clicked()),nak,SLOT(hide()));
+    connect(ver, SIGNAL(clicked()),part,SLOT(hide()));
+}
 
 void wordEdit::createGui(){
     kana=new QLineEdit();
@@ -89,6 +86,7 @@ void wordEdit::createGui(){
     foreign->setText("Foreign word");
     nak=new QRadioButton;
     nak->setText("Na-Keiyoushi");
+    nak->setChecked(true);
     ik=new QRadioButton;
     ik->setText("I-Keiyoushi");
     adjType=new QButtonGroup;
@@ -120,6 +118,53 @@ void wordEdit::createGui(){
     connect(no,SIGNAL(clicked()),this, SLOT(clear()));
 }
 
+void wordEdit::editWordGui(){
+    setWindowTitle("Word edit");
+    createGui();
+    yes->setText("Edit");
+    kana->setPlaceholderText(W->getKana());
+    romaji->setPlaceholderText(W->getRomaji());
+    kanji->setPlaceholderText(W->getKanji());
+    meaning->setPlaceholderText(W->getMeaning());
+    level->setCurrentIndex(W->getLevel());
+    adjective* pa=dynamic_cast<adjective*>(W);
+    if(pa){
+        nak->setVisible(true);
+        ik->setVisible(true);
+        if(pa->isNaKeiyoushi()){
+            nak->setChecked(true);
+        }
+        else{
+            ik->setChecked(true);
+        }
+    }
+    adverb* pad=dynamic_cast<adverb*>(W);
+    if(pad){
+        part->setVisible(true);
+        if(pad->isParticle()){
+            part->setChecked(true);
+        }
+    }
+    noun* pn=dynamic_cast<noun*>(W);
+    if(pn){
+        foreign->setVisible(true);
+        if(pn->isForeign()){
+            foreign->setChecked(true);
+        }
+    }
+    verb* pv=dynamic_cast<verb*>(W);
+    if(pv){
+        trans->setVisible(true);
+        ichi->setVisible(true);
+        if(pv->isTransitive()){
+            trans->setChecked(true);
+        }
+        if(pv->isIchidan()){
+            ichi->setChecked(true);
+        }
+    }
+}
+
 bool wordEdit:: checkRequest(){
     if(W == 0 && !adj->isChecked() && !adv->isChecked() && !nou->isChecked() && !ver->isChecked()){
         QMessageBox error;
@@ -145,6 +190,14 @@ bool wordEdit:: checkRequest(){
         error.exec();
         return false;
     }
+    if(level->currentText() == "Select"){
+        QMessageBox error;
+        error.setWindowTitle("Error");
+        error.setText("You must select a JLPT level.");
+        error.show();
+        error.exec();
+        return false;
+    }
     return true;
 }
 
@@ -165,6 +218,24 @@ void wordEdit:: edit(){
         if(level->currentIndex() !=0){
             W->setLevel(level->currentIndex());
         }
+        adjective* pa=dynamic_cast<adjective*>(W);
+        if(pa){
+            pa->setType(nak->isChecked());
+        }
+        adverb* pad=dynamic_cast<adverb*>(W);
+        if(pad){
+            pad->setType(part->isChecked());
+        }
+        verb* pv=dynamic_cast<verb*>(W);
+        if(pv){
+             pv->setTrans(trans->isChecked());
+             pv->setType(ichi->isChecked());
+        }
+        noun* pn=dynamic_cast<noun*>(W);
+        if(pn){
+            pn->setType(foreign->isChecked());
+        }
+
         dict.fileExport();
         QMessageBox success;
         success.setWindowTitle("Word edited");
@@ -209,6 +280,7 @@ void wordEdit:: clear(){
     romaji->clear();
     kanji->clear();
     meaning->clear();
+
 }
 
 

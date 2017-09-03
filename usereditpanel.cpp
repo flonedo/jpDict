@@ -35,6 +35,7 @@ void userEditPanel::createField(){
     setWindowTitle("Edit");
     uName=new QLineEdit;
     pWord=new QLineEdit;
+    pWord->setEchoMode(QLineEdit::Password);
     level=new QComboBox;
     level->addItem("Select");
     level->addItem("N1");
@@ -46,12 +47,13 @@ void userEditPanel::createField(){
     jlpt->setText("JLPT");
     if(toEdit != 0){
         uName->setPlaceholderText(QString::fromStdString(toEdit->getUsername()));
-        pWord->setPlaceholderText(QString::fromStdString(toEdit->getPassword()));
-        if(dynamic_cast<student*>(toEdit)){
+        student* sp=dynamic_cast<student*>(toEdit);
+        if(sp){
             layout->addRow(new QLabel("STUDENT"));
             if(dynamic_cast<admin*>(currentUser)){
                 level->setVisible(true);
                 jlpt->setVisible(true);
+                level->setCurrentIndex(sp->getLevel());
             }
             else{
                 level->setVisible(false);
@@ -102,27 +104,40 @@ void userEditPanel::createField(){
 
 
 void userEditPanel::addUser(){
+    bool acceptable=true;
     if(toEdit != 0){
-        if(pWord->text().toStdString() != ""){
-        toEdit->setPassword(pWord->text().toStdString());
-        }
-        if(uName->text().toStdString() != ""){
+        bool alreadyTaken=userList.isInContainer(uName->text().toStdString());
+        if(uName->text().toStdString() != "" && ((!alreadyTaken) || uName->text().toStdString() == toEdit->getUsername()) ){
             toEdit->setUsername(uName->text().toStdString());
         }
-        if(dynamic_cast<student*>(toEdit)){
+        else if(alreadyTaken){
+            acceptable=false;
+            QMessageBox error;
+            error.setWindowTitle("Error");
+            error.setText("Username not available.");
+            error.show();
+            error.exec();
+        }
+        if(acceptable && pWord->text().toStdString() != ""){
+        toEdit->setPassword(pWord->text().toStdString());
+        }
+        if(acceptable && dynamic_cast<student*>(toEdit)){
             student* sp=dynamic_cast<student*>(toEdit);
             if(level->currentIndex() != 0){
                 sp->setLevel(level->currentIndex());
             }
         }
-        userList.fileExport();
-        QMessageBox success;
-        success.setWindowTitle("User edited");
-        success.setText("User has been edited.");
-        success.show();
-        success.exec();
-        userList.fileExport();
-        this->close();
+
+        if(acceptable){
+            userList.fileExport();
+            QMessageBox success;
+            success.setWindowTitle("User edited");
+            success.setText("User has been edited.");
+            success.show();
+            success.exec();
+            userList.fileExport();
+            this->close();
+        }
 }
     else{
         if((pWord->text().toStdString() == "") || (uName->text().toStdString() == "")){

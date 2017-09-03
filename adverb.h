@@ -12,7 +12,7 @@ public:
     bool isParticle()const;
     bool operator==(const adverb&)const;
     virtual word* clone()const;
-    virtual QString info()const;
+    virtual QString getInfo()const;
     virtual void exportWordData(QXmlStreamWriter&)const;
     void setType(bool);
 };

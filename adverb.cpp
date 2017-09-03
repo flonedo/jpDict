@@ -13,7 +13,7 @@ word* adverb::clone()const{
     return new adverb(*this);
 }
 
-QString adverb::info()const{
+QString adverb::getInfo()const{
     QString info=word::getInfo();
     info.prepend("-ADV-\n");
     if(isParticle()){

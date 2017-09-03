@@ -14,6 +14,15 @@ user* userContainer::search(std::string uName)const{
     return 0;
 }
 
+bool userContainer::isInContainer(std::string uName)const{
+    for(std::list<user*>::const_iterator it=userList.begin(); it != userList.end(); ++it){
+        if(uName == (*it)->getUsername()){
+            return true;
+        }
+    }
+    return false;
+}
+
 std::list<user*> userContainer::searchTeachers()const{
     std::list<user*> res;
     for(std::list<user*>::const_iterator it=userList.begin(); it != userList.end(); ++it){

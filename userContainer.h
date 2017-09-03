@@ -19,6 +19,7 @@ public:
     userContainer(){}
     bool addUser(user*); //restituisce bool a segnalare il successo dell'operazione
     bool removeUser(std::string);
+    bool isInContainer(std::string uName)const;
     user* search(std::string)const;
     std::list<user*> search(int lev=-1)const;
     std::list<user*> searchTeachers()const;

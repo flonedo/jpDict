@@ -11,108 +11,140 @@ workPanel::workPanel(userContainer& uc, user* u, QWidget* parent):
     QWidget(parent), userList(uc), currentUser(u){
   kanjiList.fileImport();
   wordList.fileImport();
-  layout=new QGridLayout();
-  setLayout(layout);
-  searchResults=new QListWidget(this);
-  infoL=new QLabel;
-  infoL->setText("");
-  infoL->setFixedWidth(180);
-  info=new QScrollArea;
-  info->setWidget(infoL);
-  info->setFixedWidth(200);
-  info->setFixedHeight(200);
-  searchKeyword=new QLineEdit;
-  searchKeyword->setPlaceholderText("Enter keyword");
-  JP=new QRadioButton;
-  JP->setText("Japanese - English");
-  JP->setChecked(true);
-  EN=new QRadioButton;
-  EN->setText("English - Japanese");
-  type=new QComboBox;
-  type->setWindowTitle("Select type");
-  type->addItem("Word");
-  type->addItem("Kanji");
-  advanced=new QLabel;
-  advanced->setText("Advanced search options:");
-  radical=new QRadioButton;
-  radical->setText("Search by radical");
-  sound=new QRadioButton;
-  sound->setText("Search by reading");
-  cancel=new QPushButton;
-  cancel->setText("New search");
-  startSearch=new QPushButton;
-  startSearch->setText("Search");
-  JLPT=new QComboBox;
-  JLPT->addItem("All");
-  JLPT->addItem("N1");
-  JLPT->addItem("N2");
-  JLPT->addItem("N3");
-  JLPT->addItem("N4");
-  JLPT->addItem("N5");
-  edit=new QPushButton;
-  edit->setText("Edit");
-  addWord=new QPushButton;
-  addWord->setText("Add new word");
-  addKanji=new QPushButton;
-  addKanji->setText("Add new kanji");
-  userAdm=new QPushButton;
-  userAdm->setText("Open user administration panel");
-  delWord=new QPushButton;
-  delWord->setText("Delete");
-  layout->addWidget(searchResults, 0,3,7,1);
-  layout->addWidget(info,0,0);
-  layout->addWidget(searchKeyword,2,0);
-  layout->addWidget(type, 2,1);
-  layout->addWidget(JP,3,0);
-  layout->addWidget(EN, 3,1);
-  layout->addWidget(advanced,4,0);
-  layout->addWidget(radical,5,0);
-  layout->addWidget(sound,5,1);
-  startSearch->setFocus();
-
-  student* sp=dynamic_cast<student*>(currentUser);
-  if(sp){
-      layout->addWidget(startSearch, 6,0);
-      layout->addWidget(cancel,6,1);
-  }
-  else{
-
-      layout->addWidget(JLPT, 6,0);
-      layout->addWidget(startSearch,7,0);
-      layout->addWidget(cancel, 7,1);
-      layout->addWidget(addKanji,9,1);
-      layout->addWidget(addWord, 9,0);
-      layout->addWidget(userAdm,9,2);
-      layout->addWidget(edit, 8,0);
-      layout->addWidget(delWord, 8,1);
-
-  }
-  connect(startSearch, SIGNAL(clicked()), this , SLOT(search()));
-  connect(delWord, SIGNAL(clicked()), this, SLOT(deleteSelected()));
-  connect(addWord, SIGNAL(clicked()), this, SLOT(addWPanel()));
-  connect(addKanji, SIGNAL(clicked()), this, SLOT(addKPanel()));
-  connect(edit, SIGNAL(clicked()), this, SLOT(editPanel()));
-  connect(cancel, SIGNAL(clicked()), this, SLOT(clear()));
-  connect(userAdm, SIGNAL(clicked()), this, SLOT(userAdminPanel()));
-  connect(searchResults, SIGNAL(activated(QModelIndex)),this,SLOT(showInfo()));
+  createGui();
 
 }
 
 
+void workPanel:: createGui(){
+    layout=new QGridLayout();
+    setLayout(layout);
+    searchResults=new QListWidget(this);
+    searchResults->setMinimumWidth(210);
+    searchResults->setMinimumHeight(300);
+    searchResults->adjustSize();
+    infoL=new QLabel;
+    infoL->setText("");
+    infoL->setMinimumWidth(200);
+    info=new QScrollArea;
+    info->setWidget(infoL);
+    info->setMinimumWidth(210);
+    info->setMinimumHeight(200);
+    searchKeyword=new QLineEdit;
+    searchKeyword->setPlaceholderText("Enter keyword");
+    JP=new QRadioButton;
+    JP->setText("Japanese - English");
+    JP->setChecked(true);
+    EN=new QRadioButton;
+    EN->setText("English - Japanese");
+    type=new QComboBox;
+    type->setWindowTitle("Select type");
+    type->addItem("Word");
+    type->addItem("Kanji");
+    advanced=new QLabel;
+    advanced->setText("Advanced search options:");
+    advanced->setVisible(false);
+    radical=new QRadioButton;
+    radical->setText("Search by radical");
+    radical->setVisible(false);
+    sound=new QRadioButton;
+    sound->setText("Search by reading");
+    sound->setVisible(false);
+    cancel=new QPushButton;
+    cancel->setText("Reset");
+    startSearch=new QPushButton;
+    startSearch->setText("Search");
+    JLPT=new QComboBox;
+    JLPT->addItem("All");
+    JLPT->addItem("N1");
+    JLPT->addItem("N2");
+    JLPT->addItem("N3");
+    JLPT->addItem("N4");
+    JLPT->addItem("N5");
+    edit=new QPushButton;
+    edit->setText("Edit");
+    addWord=new QPushButton;
+    addWord->setText("Add new word");
+    addKanji=new QPushButton;
+    addKanji->setText("Add new kanji");
+    userAdm=new QPushButton;
+    userAdm->setText("Open user administration panel");
+    delWord=new QPushButton;
+    delWord->setText("Delete");
+    layout->addWidget(searchResults, 0,3,7,1);
+    layout->addWidget(info,0,0);
+    layout->addWidget(searchKeyword,2,0);
+    layout->addWidget(type, 2,1);
+    layout->addWidget(JP,3,0);
+    layout->addWidget(EN, 3,1);
+    layout->addWidget(advanced,4,0);
+    layout->addWidget(radical,5,0);
+    layout->addWidget(sound,5,1);
+    startSearch->setFocus();
 
+    student* sp=dynamic_cast<student*>(currentUser);
+    if(sp){
+        layout->addWidget(startSearch, 6,0);
+        layout->addWidget(cancel,6,1);
+    }
+    else{
 
+        layout->addWidget(JLPT, 6,0);
+        layout->addWidget(startSearch,7,0);
+        layout->addWidget(cancel, 7,1);
+        layout->addWidget(addKanji,9,1);
+        layout->addWidget(addWord, 9,0);
+        layout->addWidget(userAdm,9,2);
+        layout->addWidget(edit, 8,0);
+        layout->addWidget(delWord, 8,1);
+
+    }
+    connect(startSearch, SIGNAL(clicked()), this , SLOT(search()));
+    connect(delWord, SIGNAL(clicked()), this, SLOT(deleteSelected()));
+    connect(addWord, SIGNAL(clicked()), this, SLOT(addWPanel()));
+    connect(addKanji, SIGNAL(clicked()), this, SLOT(addKPanel()));
+    connect(edit, SIGNAL(clicked()), this, SLOT(editPanel()));
+    connect(cancel, SIGNAL(clicked()), this, SLOT(clear()));
+    connect(userAdm, SIGNAL(clicked()), this, SLOT(userAdminPanel()));
+    connect(searchResults,SIGNAL(currentTextChanged(QString)),this,SLOT(showInfo()));
+    connect(type,SIGNAL(currentIndexChanged(QString)),this,SLOT(showButtons()));
+
+}
+
+void workPanel::showButtons(){
+    if(type->currentText() == "Word"){
+        radical->setVisible(false);
+        sound->setVisible(false);
+        JP->setVisible(true);
+        JP->setChecked(true);
+        EN->setVisible(true);
+        advanced->setVisible(false);
+    }
+    if(type->currentText() == "Kanji"){
+        radical->setVisible(true);
+        sound->setVisible(true);
+        JP->setVisible(false);
+        EN->setVisible(false);
+        advanced->setVisible(true);
+    }
+}
 
 void workPanel::clear(){
     searchKeyword->clear();
     searchResults->clear();
     infoL->clear();
     startSearch->setFocus();
+    radical->setChecked(false);
+    sound->setChecked(false);
+    JP->setChecked(true);
 }
 
 void workPanel::showInfo(){
-    QString data=(searchResults->currentItem()->data(1).toString());
-    infoL->setText(data);
-    infoL->adjustSize();
+    if(searchResults->currentRow() > 0){
+        QString data=(searchResults->currentItem()->data(1).toString());
+        infoL->setText(data);
+        infoL->adjustSize();
+    }
 }
 
 void workPanel::search(){
@@ -120,6 +152,7 @@ void workPanel::search(){
     bool totalAccess=false;
     std::list<word*> resW;
     std::list<kanji*> resK;
+    //QListWidgetItem* row=new QListWidgetItem;
     student* sp=dynamic_cast<student*>(currentUser);
     if(sp){
         lev=sp->getLevel();
@@ -145,6 +178,7 @@ void workPanel::search(){
                 QString info=(*it)->getInfo();
                 row->setData(1,info);
                 searchResults->addItem(row);
+                searchResults->setCurrentItem(row);
             }
         }
     }
@@ -170,11 +204,13 @@ void workPanel::search(){
                 QString info=(*it)->getInfo();
                 row->setData(1,info);
                 searchResults->addItem(row);
+                searchResults->setCurrentItem(row);
             }
         }
     }
     resK.clear();
     resW.clear();
+
 }
 
 void workPanel::editPanel(){

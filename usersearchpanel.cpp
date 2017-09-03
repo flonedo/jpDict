@@ -13,6 +13,7 @@ userSearchPanel::userSearchPanel(user *cUser, userContainer &uc, QWidget *parent
 void userSearchPanel::createGui(){
     createField();
     createButtons();
+    //searchButton->setFocus();
 }
 
 void userSearchPanel::createField(){
@@ -20,8 +21,8 @@ void userSearchPanel::createField(){
     setWindowTitle("User administration");
     searchUsername=new QLineEdit();
     searchUsername->setPlaceholderText("Enter username");
-    onlyStudent=new QRadioButton("Student");
-    onlyTeacher=new QRadioButton("Teacher");
+    onlyStudent=new QRadioButton("Students");
+    onlyTeacher=new QRadioButton("Teachers");
     filterLevel=new QComboBox();
     filterLevel->addItem("All");
     filterLevel->addItem("N1");
@@ -29,20 +30,21 @@ void userSearchPanel::createField(){
     filterLevel->addItem("N3");
     filterLevel->addItem("N4");
     filterLevel->addItem("N5");
+    filterLevel->hide();
     results=new QListWidget(this);
     layout->addRow(new QLabel("Search by username:"), searchUsername);
-    layout->addRow(new QLabel("Seach by filter:"));
+    layout->addRow(new QLabel("Get all"));
     layout->addRow(onlyStudent, onlyTeacher);
     jlpt=new QLabel;
     jlpt->setText("JLPT level");
     layout->addRow(jlpt,filterLevel);
+    jlpt->setVisible(false);
     layout->addRow(results);
     connect(onlyStudent,SIGNAL(clicked()),filterLevel,SLOT(show()));
     connect(onlyTeacher,SIGNAL(clicked()),filterLevel,SLOT(hide()));
-    connect(results, SIGNAL(activated(QModelIndex)),this,SLOT(selectedItem()));
-
-;
-
+    connect(onlyStudent,SIGNAL(clicked()),jlpt,SLOT(show()));
+    connect(onlyTeacher,SIGNAL(clicked()),jlpt,SLOT(hide()));
+    connect(results, SIGNAL(doubleClicked(QModelIndex)),this,SLOT(selectedItem()));
 }
 
 
@@ -53,7 +55,6 @@ void userSearchPanel::createButtons(){
     reset->setText("Reset");
     addButton=new QPushButton();
     addButton->setText("Add new user");
-    searchButton->setFocus();
     layout->addRow(searchButton,reset);
     if(dynamic_cast<admin*>(currentUser)){
         layout->addRow(addButton);
@@ -65,31 +66,38 @@ void userSearchPanel::createButtons(){
 
 void userSearchPanel::clear(){
     searchUsername->clear();
-    onlyStudent->clearFocus();
-    onlyTeacher->clearFocus();
     results->clear();
 }
 
 void userSearchPanel::findUser(){
     user* found=0;
+    QString uName=searchUsername->text();
     clear();
-    if(searchUsername->text() != ""){
-        found=userList.search(searchUsername->text().toStdString());
+    if(uName != ""){
+        found=userList.search(uName.toStdString());
         showUser(found);
     }
     else{
         if(onlyStudent->isChecked()){
-            std::list<user*> L=userList.search(filterLevel->currentIndex());
-            for(std::list<user*>::const_iterator it=L.begin(); it != L.end(); ++it){
-                showUser(*it);
-            }
+            allStudents();
         }
-       if(onlyTeacher->isChecked()){
-           std::list<user*> L=userList.searchTeachers();
-           for(std::list<user*>::const_iterator it=L.begin(); it != L.end(); ++it){
-               showUser(*it);
-           }
-       }
+        if(onlyTeacher->isChecked()){
+            allTeachers();
+        }
+    }
+}
+
+void userSearchPanel::allStudents(){
+    std::list<user*> L=userList.search(filterLevel->currentIndex());
+    for(std::list<user*>::const_iterator it=L.begin(); it != L.end(); ++it){
+        showUser(*it);
+    }
+}
+
+void userSearchPanel::allTeachers(){
+    std::list<user*> L=userList.searchTeachers();
+    for(std::list<user*>::const_iterator it=L.begin(); it != L.end(); ++it){
+        showUser(*it);
     }
 }
 
@@ -128,8 +136,6 @@ void userSearchPanel::selectedItem(){
             uEdit->exec();
         }
     }
-    clear();
-
 }
 
 void userSearchPanel::newUser(){

@@ -39,13 +39,15 @@ private:
     QLabel* choice;
     QButtonGroup* adjType;
     bool checkRequest();
+    void createGui();
+    void newWordGui();
+    void editWordGui();
 public:
     wordEdit(word* w, dictionary& dict, QWidget* parent=Q_NULLPTR);
 public slots:
     //void createL();
     void edit();
     void clear();
-    void createGui();
 };
 
 #endif // WORDEDIT_H

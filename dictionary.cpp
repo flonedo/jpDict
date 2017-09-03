@@ -201,11 +201,6 @@ void dictionary::fileImport(){
                         w=new verb(kana, romaji, kanji, level, meaning, b, c);
                     }
                     if(w != 0){
-                        /*QStringList m=meaning.split(',');
-                        for (int i=0; i < m.size(); ++i){
-                            w->word::addMeaning(m.at(i));
-                        }*/
-                       // w->setMeaning(meaning);
                         addWord(w);
                         delete w;
                     }

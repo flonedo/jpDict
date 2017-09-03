@@ -5,10 +5,10 @@
 #include<QLineEdit>
 #include<userContainer.h>
 #include<QFormLayout>
-#include<QRadioButton>
 #include<QComboBox>
 #include<QListWidget>
 #include<QDialog>
+#include<QRadioButton>
 #include<usereditpanel.h>
 
 class userSearchPanel: public QDialog{
@@ -37,8 +37,8 @@ public:
     userSearchPanel(user *cUser, userContainer &uc, QWidget *parent=Q_NULLPTR);
 public slots:
     void findUser();
-    //void editUser();
-    //void clear();
+    void allStudents();
+    void allTeachers();
     void selectedItem(/*QListWidgetItem**/);
     void clear();
     void newUser();

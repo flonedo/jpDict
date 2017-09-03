@@ -13,7 +13,7 @@ public:
     bool isForeign()const;
     bool operator==(const noun&)const;
     virtual word* clone()const;
-    virtual QString info()const;
+    virtual QString getInfo()const;
     virtual void exportWordData(QXmlStreamWriter&)const;
     void setType(bool);
 };

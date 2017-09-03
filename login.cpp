@@ -23,6 +23,7 @@ void login::createFields(){
     logUsername=new QLineEdit();
     logUsername->setPlaceholderText("Enter username");
     logPassword=new QLineEdit();
+    logPassword->setEchoMode(QLineEdit::Password);
     logPassword->setPlaceholderText("Enter password");
     layout->addRow(new QLabel("Username"), logUsername);
     layout->addRow(new QLabel("Password"), logPassword);

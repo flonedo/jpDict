@@ -16,7 +16,7 @@ word* verb::clone() const{
     return new verb(*this);
 }
 
-QString verb::info()const{
+QString verb::getInfo()const{
     QString info=word::getInfo();
     info.prepend("-VER-\n");
     if(ichidan){

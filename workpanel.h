@@ -53,7 +53,7 @@ private:
     QPushButton* addWord;
     QPushButton* userAdm;
     QPushButton* delWord;
-
+    void createGui();
 private slots:
     void addKPanel();
     void addWPanel();
@@ -63,6 +63,7 @@ private slots:
     void showInfo();
     void clear();
     void search();
+    void showButtons();
 };
 
 #endif // WORKPANEL_H
